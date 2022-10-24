@@ -38,7 +38,18 @@ if __name__ == '__main__':
     clustering_flag = args.clustering
 
     sc = SparkContext.getOrCreate()
-    sc.setLogLevel("OFF")
+    """
+    df = spark.createDataFrame(tup,schema=['tweet','Sentiment'])
+    df = (df.withColumn("tweet", F.regexp_replace("tweet", r"[@#&][A-Za-z0-9-]+", " ")))
+    # preprocessing part (can add/remove stuff) , right now taking the column subject_of_message for spam detection
+    stage_1 = StringIndexer(inputCol='Sentiment',outputCol='label')
+    stage_2 = Tokenizer(inputCol="tweet", outputCol="token_text")
+    stopwords = StopWordsRemover().getStopWords() + ['-']
+    stage_3 = StopWordsRemover().setStopWords(stopwords).setInputCol('token_text').setOutputCol('filtered_words')
+    stage_4 = NGram().setN(2).setInputCol('filtered_words').setOutputCol('bigrams')
+    stage_5 = HashingTF(inputCol="bigrams", outputCol="vector",numFeatures=8000)
+    
+    """
     
     spark = SparkSession(sc)
     ssc = StreamingContext(sc,streamingRate)
@@ -65,7 +76,7 @@ if __name__ == '__main__':
 
     list_JSON_DS = parsed_JSON_DS.flatMap(lambda x:x.values())
 
-    rows_DS = list_JSON_DS.map(lambda x: Row(subject=x['feature0'],body=x['feature1'],classLabel=x['feature2']))
+    rows_DS = list_JSON_DS.map(lambda x: Row(classLabel=x['feature0'],text=x['feature1']))
 
     if(not clustering_flag):
 

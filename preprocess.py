@@ -28,7 +28,7 @@ def preprocessAndTrainEvalModel(time,rdd,ssc,stop_flag,data_prep_pipe,model):
         stop_flag[0] = 0
         sqlContext = getSqlContextInstance(rdd.context)
         df1 = sqlContext.createDataFrame(rdd)# creates the rdd in form of dataframe
-        df = df1.select(concat_ws(' ',df1.subject,df1.body).alias("text"),"classLabel")# since there was 2 columns concate subject of mail and body of mail into one string and one more column ClassLabel
+        df = df1.select("text","classLabel")# since there was 2 columns concate subject of mail and body of mail into one string and one more column ClassLabel
         preprocess = data_prep_pipe.fit(df)#outputs transformers
         clean_data = preprocess.transform(df)#output dataFrame 
         clean_data = clean_data.select(['label','features'])
@@ -58,7 +58,7 @@ def preprocessAndTestModel(time,rdd,ssc,stop_flag,data_prep_pipe,model):
         stop_flag[0] = 0
         sqlContext = getSqlContextInstance(rdd.context)
         df1 = sqlContext.createDataFrame(rdd)
-        df = df1.select(concat_ws(' ',df1.subject,df1.body).alias("text"),"classLabel")
+        df = df1.select("text","classLabel")#df = df1.select(concat_ws(' ',df1.subject,df1.body).alias("text"),"classLabel")
         preprocess = data_prep_pipe.fit(df)
         clean_data = preprocess.transform(df)
         clean_data = clean_data.select(['label','features'])
@@ -87,7 +87,7 @@ def preprocessAndTrainModel(time,rdd,ssc,stop_flag,data_prep_pipe,model):
         stop_flag[0] = 0
         sqlContext = getSqlContextInstance(rdd.context)
         df1 = sqlContext.createDataFrame(rdd)
-        df = df1.select(concat_ws(' ',df1.subject,df1.body).alias("text"),"classLabel")
+        df = df1.select("text","classLabel")#df = df1.select(concat_ws(' ',df1.subject,df1.body).alias("text"),"classLabel")
         preprocess = data_prep_pipe.fit(df)
         clean_data = preprocess.transform(df)
         clean_data = clean_data.select(['label','features'])
@@ -113,7 +113,7 @@ def preprocessAndClustering(time,rdd,ssc,stop_flag,data_prep_pipe):
         stop_flag[0] = 0
         sqlContext = getSqlContextInstance(rdd.context)
         df1 = sqlContext.createDataFrame(rdd)
-        df = df1.select(concat_ws(' ',df1.subject,df1.body).alias("text"),"classLabel")
+        df = df1.select("text","classLabel")#df = df1.select(concat_ws(' ',df1.subject,df1.body).alias("text"),"classLabel")
         preprocess = data_prep_pipe.fit(df)
         clean_data = preprocess.transform(df)
         clean_data = clean_data.select(['label','features'])
